@@ -284,10 +284,10 @@ DLL_PUBLIC void AppMC::print_stats(const double /*start_time*/)
     }
 }
 
-std::mutex &AppMC::destructible() {
+DLL_PUBLIC std::mutex &AppMC::destructible() {
     return mtx;
 }
 
-void AppMC::signal_stop() {
+DLL_PUBLIC void AppMC::signal_stop() {
     data->counter.signal_stop();
 }
