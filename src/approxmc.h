@@ -33,6 +33,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <mutex>
 #include <cryptominisat5/cryptominisat.h>
 #include <cryptominisat5/solvertypesmini.h>
 
