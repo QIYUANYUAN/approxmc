@@ -107,11 +107,17 @@ public:
     void add_xor_clause(const std::vector<uint32_t>& vars, bool rhs);
     void print_stats(const double start_time);
 
+    std::mutex& destructible();
+
+    void signal_stop();
+
 private:
     ////////////////////////////
     // Do not bother with this, it's private
     ////////////////////////////
     AppMCPrivateData* data;
+
+    std::mutex mtx;
 };
 
 }

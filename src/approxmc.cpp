@@ -206,6 +206,7 @@ DLL_PUBLIC void AppMC::setup_vars()
 
 DLL_PUBLIC ApproxMC::SolCount AppMC::count()
 {
+    mtx.lock();
     if (data->conf.verb > 2) {
         cout << "c [appmc] using seed: " << data->conf.seed << endl;
     }
@@ -223,6 +224,7 @@ DLL_PUBLIC ApproxMC::SolCount AppMC::count()
     setup_sampling_vars(data);
 
     SolCount sol_count = data->counter.solve(data->conf);
+    mtx.unlock();
     return sol_count;
 }
 
@@ -280,4 +282,12 @@ DLL_PUBLIC void AppMC::print_stats(const double /*start_time*/)
     if (data->conf.verb > 2) {
         data->counter.solver->set_verbosity(data->conf.verb);
     }
+}
+
+std::mutex &AppMC::destructible() {
+    return mtx;
+}
+
+void AppMC::signal_stop() {
+    data->counter.signal_stop();
 }

@@ -101,6 +101,8 @@ struct SparseData {
 
 class Counter {
 public:
+    Counter();
+
     ApproxMC::SolCount solve(Config _conf);
     string gen_rnd_bits(const uint32_t size,
                         const uint32_t numhashes, SparseData& sparse_data);
@@ -112,6 +114,8 @@ public:
     ApproxMC::SolCount calc_est_count();
     void print_final_count_stats(ApproxMC::SolCount sol_count);
     const Constants constants;
+
+    void signal_stop();
 
 private:
     Config conf;
@@ -188,6 +192,8 @@ private:
 
     int argc;
     char** argv;
+
+    bool stop_signal;
 };
 
 

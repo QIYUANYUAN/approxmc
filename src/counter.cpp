@@ -188,6 +188,10 @@ SolNum Counter::bounded_sol_count(
     double last_found_time = cpuTimeTotal();
     vector<vector<lbool>> models;
     while (solutions < maxSolutions) {
+        if (stop_signal) {
+            cout << "c [appmc-fork] signaled stop." << endl;
+            return SolNum(0,0);
+        }
         lbool ret = solver->solve(&new_assumps);
         //COZ_PROGRESS_NAMED("one solution")
         assert(ret == l_False || ret == l_True);
@@ -275,14 +279,16 @@ ApproxMC::SolCount Counter::solve(Config _conf)
     randomEngine.seed(conf.seed);
 
     ApproxMC::SolCount solCount = count();
-    print_final_count_stats(solCount);
+    if (!stop_signal) {
+        print_final_count_stats(solCount);
 
-    if (conf.verb) {
-        cout << "c [appmc] FINISHED ApproxMC T: "
-        << (cpuTimeTotal() - startTime) << " s"
-        << endl;
-        if (solCount.hashCount == 0 && solCount.cellSolCount == 0) {
-            cout << "c [appmc] Formula was UNSAT " << endl;
+        if (conf.verb) {
+            cout << "c [appmc] FINISHED ApproxMC T: "
+                 << (cpuTimeTotal() - startTime) << " s"
+                 << endl;
+            if (solCount.hashCount == 0 && solCount.cellSolCount == 0) {
+                cout << "c [appmc] Formula was UNSAT " << endl;
+            }
         }
     }
     return solCount;
@@ -853,4 +859,12 @@ bool Counter::check_model_against_hash(const Hash& h, const vector<lbool>& model
 
     //hence return !rhs
     return !rhs;
+}
+
+Counter::Counter() {
+    stop_signal = false;
+}
+
+void Counter::signal_stop() {
+    stop_signal = true;
 }
