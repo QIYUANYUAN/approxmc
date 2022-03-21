@@ -44,7 +44,7 @@ namespace ApproxMC {
 
 using namespace ApproxMC;
 
-DLL_PUBLIC AppMC::AppMC()
+DLL_PUBLIC AppMC::AppMC():stop_signal(false)
 {
     data = new AppMCPrivateData;
     data->counter.solver = new SATSolver();
@@ -206,7 +206,7 @@ DLL_PUBLIC void AppMC::setup_vars()
 
 DLL_PUBLIC ApproxMC::SolCount AppMC::count()
 {
-    mtx.lock();
+//    mtx.lock();
     if (data->conf.verb > 2) {
         cout << "c [appmc] using seed: " << data->conf.seed << endl;
     }
@@ -224,7 +224,12 @@ DLL_PUBLIC ApproxMC::SolCount AppMC::count()
     setup_sampling_vars(data);
 
     SolCount sol_count = data->counter.solve(data->conf);
-    mtx.unlock();
+    if(stop_signal){
+        sol_count.valid = false;
+        sol_count.cellSolCount = 0x7fffffff;
+        sol_count.hashCount = 0x7fffffff;
+    }
+//    mtx.unlock();
     return sol_count;
 }
 
@@ -284,10 +289,11 @@ DLL_PUBLIC void AppMC::print_stats(const double /*start_time*/)
     }
 }
 
-DLL_PUBLIC std::mutex &AppMC::destructible() {
-    return mtx;
-}
+//DLL_PUBLIC std::mutex &AppMC::destructible() {
+//    return mtx;
+//}
 
 DLL_PUBLIC void AppMC::signal_stop() {
+    stop_signal = true;
     data->counter.signal_stop();
 }

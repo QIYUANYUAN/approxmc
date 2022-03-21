@@ -190,7 +190,7 @@ SolNum Counter::bounded_sol_count(
     while (solutions < maxSolutions) {
         if (stop_signal) {
             cout << "c [appmc-fork] signaled stop." << endl;
-            return SolNum(0x7fffffff,0x7fffffff);
+            return SolNum(0,0);
         }
         lbool ret = solver->solve(&new_assumps);
         //COZ_PROGRESS_NAMED("one solution")
@@ -279,7 +279,7 @@ ApproxMC::SolCount Counter::solve(Config _conf)
     randomEngine.seed(conf.seed);
 
     ApproxMC::SolCount solCount = count();
-    if (solCount.hashCount<0x7fffffff) {
+    if (!stop_signal) {
         print_final_count_stats(solCount);
 
         if (conf.verb) {
@@ -291,6 +291,7 @@ ApproxMC::SolCount Counter::solve(Config _conf)
             }
         }
     }
+
     return solCount;
 }
 
