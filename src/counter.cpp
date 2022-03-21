@@ -279,7 +279,7 @@ ApproxMC::SolCount Counter::solve(Config _conf)
     randomEngine.seed(conf.seed);
 
     ApproxMC::SolCount solCount = count();
-    if (!stop_signal) {
+    if (solCount.hashCount<0x7fffffff) {
         print_final_count_stats(solCount);
 
         if (conf.verb) {
