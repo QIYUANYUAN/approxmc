@@ -190,7 +190,7 @@ SolNum Counter::bounded_sol_count(
     while (solutions < maxSolutions) {
         if (stop_signal) {
             cout << "c [appmc-fork] signaled stop." << endl;
-            return SolNum(0,0);
+            return SolNum(0x7fffffff,0x7fffffff);
         }
         lbool ret = solver->solve(&new_assumps);
         //COZ_PROGRESS_NAMED("one solution")
